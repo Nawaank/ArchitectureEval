@@ -1,5 +1,31 @@
 from collections.abc import Iterable, Iterator
 
+
+def add_matter_4(cls):
+    original_init = cls.__init__
+    original_average = cls.average
+    original_str = cls.__str__
+
+    def new_init(self, name, math, physics, english, matter_4):
+        original_init(self, name, math, physics, english)
+        self.matter_4 = matter_4
+
+    def new_average(self):
+        return (self.math + self.physics + self.english + self.matter_4) / 4
+
+    def new_str(self):
+        return (
+            f"{self.name} - Math: {self.math}, Physics: {self.physics}, "
+            f"English: {self.english}, Matter 4: {self.matter_4}"
+        )
+
+    cls.__init__ = new_init
+    cls.average = new_average
+    cls.__str__ = new_str
+    return cls
+
+
+@add_matter_4
 class Student:
     def __init__(self, name, math, physics, english):
         self.name = name
@@ -81,9 +107,9 @@ class SchoolClass(Iterable):
 
 if __name__ == "__main__":
     school_class = SchoolClass()
-    school_class.add_student(Student('J', 10, 12, 13))
-    school_class.add_student(Student('A', 8, 2, 17))
-    school_class.add_student(Student('V', 9, 14, 14))
+    school_class.add_student(Student('J', 10, 12, 13, 15))
+    school_class.add_student(Student('A', 8, 2, 17, 9))
+    school_class.add_student(Student('V', 9, 14, 14, 18))
 
     print("=== Matière 1 ===")
     for student in school_class:
@@ -96,3 +122,7 @@ if __name__ == "__main__":
     print("\n=== Matière 3 ===")
     for student in school_class.iter_matter_3():
         print(student)
+
+    print("\n=== Moyennes avec matière 4 ===")
+    for student in school_class.students:
+        print(student.name, "-", student.average())
