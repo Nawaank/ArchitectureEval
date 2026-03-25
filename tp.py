@@ -20,6 +20,12 @@ class SchoolClass:
     
     def rank_matter_1(self):
         return sorted(self.students, key=lambda s: s.math, reverse=True)
+    
+    def rank_matter_2(self):
+        return sorted(self.students, key=lambda s: s.physics, reverse=True)
+
+    def rank_matter_3(self):
+        return sorted(self.students, key=lambda s: s.english, reverse=True)
 
 if __name__ == "__main__":
     school_class = SchoolClass()
@@ -27,6 +33,14 @@ if __name__ == "__main__":
     school_class.add_student(Student('A', 8, 2, 17))
     school_class.add_student(Student('V', 9, 14, 14))
 
-    ranked = school_class.rank_matter_1()
-    for student in ranked:
+    print("=== Matière 1 ===")
+    for student in school_class.rank_matter_1():
+        print(student)
+
+    print("\n=== Matière 2 ===")
+    for student in school_class.rank_matter_2():
+        print(student)
+
+    print("\n=== Matière 3 ===")
+    for student in school_class.rank_matter_3():
         print(student)
