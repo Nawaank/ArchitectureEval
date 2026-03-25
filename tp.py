@@ -37,7 +37,7 @@ class Student:
         return (self.math + self.physics + self.english) / 3
 
     def __str__(self):
-        return f"{self.name} - Math: {self.math}, Physics: {self.physics}, English: {self.english}"
+        return f"{self.name}"
 
 
 class StudentIteratorMatter1(Iterator):
@@ -79,21 +79,34 @@ class StudentIteratorMatter3(Iterator):
         return student
 
 
+class StudentIteratorMatter4(Iterator):
+    def __init__(self, students):
+        self.students = sorted(students, key=lambda s: s.matter_4, reverse=True)
+        self.index = 0
+
+    def __next__(self):
+        if self.index >= len(self.students):
+            raise StopIteration
+        student = self.students[self.index]
+        self.index += 1
+        return student
+
+
+def add_iterator_matter_4(cls):
+    def iter_matter_4(self):
+        return StudentIteratorMatter4(self.students)
+
+    cls.iter_matter_4 = iter_matter_4
+    return cls
+
+
+@add_iterator_matter_4
 class SchoolClass(Iterable):
     def __init__(self):
         self.students = []
 
     def add_student(self, student):
         self.students.append(student)
-
-    def rank_matter_1(self):
-        return sorted(self.students, key=lambda s: s.math, reverse=True)
-
-    def rank_matter_2(self):
-        return sorted(self.students, key=lambda s: s.physics, reverse=True)
-
-    def rank_matter_3(self):
-        return sorted(self.students, key=lambda s: s.english, reverse=True)
 
     def __iter__(self):
         return StudentIteratorMatter1(self.students)
@@ -111,18 +124,6 @@ if __name__ == "__main__":
     school_class.add_student(Student('A', 8, 2, 17, 9))
     school_class.add_student(Student('V', 9, 14, 14, 18))
 
-    print("=== Matière 1 ===")
-    for student in school_class:
+    print("=== Matière 4 ===")
+    for student in school_class.iter_matter_4():
         print(student)
-
-    print("\n=== Matière 2 ===")
-    for student in school_class.iter_matter_2():
-        print(student)
-
-    print("\n=== Matière 3 ===")
-    for student in school_class.iter_matter_3():
-        print(student)
-
-    print("\n=== Moyennes avec matière 4 ===")
-    for student in school_class.students:
-        print(student.name, "-", student.average())
