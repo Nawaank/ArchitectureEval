@@ -1,3 +1,5 @@
+from collections.abc import Iterable, Iterator
+
 class Student:
     def __init__(self, name, math, physics, english):
         self.name = name
@@ -10,22 +12,40 @@ class Student:
 
     def __str__(self):
         return f"{self.name} - Math: {self.math}, Physics: {self.physics}, English: {self.english}"
-    
-class SchoolClass:
+
+
+class StudentIterator(Iterator):
+    def __init__(self, students):
+        self.students = sorted(students, key=lambda s: s.math, reverse=True)
+        self.index = 0
+
+    def __next__(self):
+        if self.index >= len(self.students):
+            raise StopIteration
+        student = self.students[self.index]
+        self.index += 1
+        return student
+
+
+class SchoolClass(Iterable):
     def __init__(self):
         self.students = []
 
     def add_student(self, student):
         self.students.append(student)
-    
+
     def rank_matter_1(self):
         return sorted(self.students, key=lambda s: s.math, reverse=True)
-    
+
     def rank_matter_2(self):
         return sorted(self.students, key=lambda s: s.physics, reverse=True)
 
     def rank_matter_3(self):
         return sorted(self.students, key=lambda s: s.english, reverse=True)
+
+    def __iter__(self):
+        return StudentIterator(self.students)
+
 
 if __name__ == "__main__":
     school_class = SchoolClass()
@@ -43,4 +63,8 @@ if __name__ == "__main__":
 
     print("\n=== Matière 3 ===")
     for student in school_class.rank_matter_3():
+        print(student)
+
+    print("\n=== Iterator matière 1 ===")
+    for student in school_class:
         print(student)
