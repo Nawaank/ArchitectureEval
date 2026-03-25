@@ -37,7 +37,10 @@ class Student:
         return (self.math + self.physics + self.english) / 3
 
     def __str__(self):
-        return f"{self.name}"
+        return (
+            f"{self.name} - Math: {self.math}, Physics: {self.physics}, "
+            f"English: {self.english}, Matter 4: {self.matter_4}"
+        )
 
 
 class StudentIteratorMatter1(Iterator):
@@ -100,8 +103,17 @@ def add_iterator_matter_4(cls):
     return cls
 
 
+class Singleton(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super().__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+
 @add_iterator_matter_4
-class SchoolClass(Iterable):
+class SchoolClass(Iterable, metaclass=Singleton):
     def __init__(self):
         self.students = []
 
@@ -124,6 +136,11 @@ if __name__ == "__main__":
     school_class.add_student(Student('A', 8, 2, 17, 9))
     school_class.add_student(Student('V', 9, 14, 14, 18))
 
+    another_school_class = SchoolClass()
+
     print("=== Matière 4 ===")
     for student in school_class.iter_matter_4():
         print(student)
+
+    print("\n=== Vérification Singleton ===")
+    print(school_class is another_school_class)
