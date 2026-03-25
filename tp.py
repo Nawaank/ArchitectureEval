@@ -14,9 +14,35 @@ class Student:
         return f"{self.name} - Math: {self.math}, Physics: {self.physics}, English: {self.english}"
 
 
-class StudentIterator(Iterator):
+class StudentIteratorMatter1(Iterator):
     def __init__(self, students):
         self.students = sorted(students, key=lambda s: s.math, reverse=True)
+        self.index = 0
+
+    def __next__(self):
+        if self.index >= len(self.students):
+            raise StopIteration
+        student = self.students[self.index]
+        self.index += 1
+        return student
+
+
+class StudentIteratorMatter2(Iterator):
+    def __init__(self, students):
+        self.students = sorted(students, key=lambda s: s.physics, reverse=True)
+        self.index = 0
+
+    def __next__(self):
+        if self.index >= len(self.students):
+            raise StopIteration
+        student = self.students[self.index]
+        self.index += 1
+        return student
+
+
+class StudentIteratorMatter3(Iterator):
+    def __init__(self, students):
+        self.students = sorted(students, key=lambda s: s.english, reverse=True)
         self.index = 0
 
     def __next__(self):
@@ -44,7 +70,13 @@ class SchoolClass(Iterable):
         return sorted(self.students, key=lambda s: s.english, reverse=True)
 
     def __iter__(self):
-        return StudentIterator(self.students)
+        return StudentIteratorMatter1(self.students)
+
+    def iter_matter_2(self):
+        return StudentIteratorMatter2(self.students)
+
+    def iter_matter_3(self):
+        return StudentIteratorMatter3(self.students)
 
 
 if __name__ == "__main__":
@@ -54,17 +86,13 @@ if __name__ == "__main__":
     school_class.add_student(Student('V', 9, 14, 14))
 
     print("=== Matière 1 ===")
-    for student in school_class.rank_matter_1():
+    for student in school_class:
         print(student)
 
     print("\n=== Matière 2 ===")
-    for student in school_class.rank_matter_2():
+    for student in school_class.iter_matter_2():
         print(student)
 
     print("\n=== Matière 3 ===")
-    for student in school_class.rank_matter_3():
-        print(student)
-
-    print("\n=== Iterator matière 1 ===")
-    for student in school_class:
+    for student in school_class.iter_matter_3():
         print(student)
